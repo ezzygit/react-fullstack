@@ -2,43 +2,77 @@ import React, {useEffect, useState} from 'react';
 import styled from 'styled-components';
 import Navbar from './components/Navbar';
 import Blog from './components/Blog';
+import {fetchBlogs, fetchUsers} from './utils';
+import Form from './components/Form';
 
 const App = () => {
 
-const [blogs, setBlogs] = useState([]) 
+const [blogs, setBlogs] = useState([]);
+const [users, setUsers] = useState([]);
+const [erinsPosts, setErinsPosts] = useState([])
+const [userId, setUserId] = useState('')
+const [user, setUser] = useState('');
+const [title, setTitle] = useState('');
+const [content, setContent] = useState('');
 
 useEffect(() => {
-const fetchData = async () => {
-const response = await fetch('http://localhost:5000/blogs', {
-  method: 'GET',
-   });
-
-  const data = await response.json();
-  setBlogs(data);
-  console.log(data);
-};
-
-fetchData();
-
+fetchBlogs(setBlogs);
+fetchUsers(setUsers);
 }, []);
 
+const getUsersBlogs = async (index) => {
+const response = await fetch(`http://localhost:5000/blogs/${users[index]._id}`)
+ const data = response.json();
+ console.log(data);
+ setBlogs(data);
+ setUsers(users[index]);
+};
+
+const addBlog = async (event) => {
+
+event.preventDefault();
+
+
+const response = await fetch(`http://localhost:5000/blogs/${user._id}`, {
+  method: "POST",
+  headers: {"Content-Type": "application/json"},
+  body: JSON.stringify({
+    title: title,
+    content: content,
+    author: user._id,
+  }),
+});
+
+const data = await response.json()
+let temp = [...blogs];
+temp.push(data);
+setBlogs(temp);
+
+};
 
 
 
+// useEffect (() => {
+//   const getBlogsByUser = async () => {
+//     const response = await fetch(`http://localhost:5000/blogs/${users[1]._id}`)
+//     const data = await response.json();
+//     setErinsPosts(data);
+//     setUserId(users[1]._id);
+//   };
 
+//   getBlogsByUser();
+// }, []);
 
-
-
-
-  return (
+return (
     <Container>
-      <Navbar/>
-      <h1>My Blog</h1>
+      <Navbar users={users} getUsersBlogs={getUsersBlogs}/>
+      <h1>{!user && "Choose a user"}</h1>
       <BlogContainer>
-      {blogs.map((blogs, index) => {
-        return <Blog blogs={blogs}/>;
+      {erinsPosts.map((blogs, index) => {
+        return <Blog blogs={blogs} user={users[1]}/>;
       })}
       </BlogContainer>
+{user && <Form setTitle={setTitle} setContent={setContent}/>}  
     </Container>
   );
 };

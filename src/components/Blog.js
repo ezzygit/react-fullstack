@@ -1,12 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
+import moment from 'moment';
 
-function Blog({blogs}) {
+function Blog({blogs, user}) {
     return (
         <Container>
         <h1>{blogs.title}</h1>
         <p>{blogs.post}</p>
-        <p>{blogs.createdAt}</p>
+        <p>{moment.utc(blogs.createdAt).fromNow()}</p>
+        <p>Written by {user.name}</p>
         </Container>
         
             

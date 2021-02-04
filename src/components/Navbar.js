@@ -1,13 +1,12 @@
 import React from 'react';
 import styled from 'styled-components';
 
-
-
-
-function Navbar() {
+function Navbar({users, getUsersBlogs}) {
     return (
         <Container>
-            <h1> I am the navbar</h1>
+            {users.map((users, index) => {
+                return <h1 onClick={() => getUsersBlogs(index)}> {users.name}</h1>;
+            })}
         </Container>
     );
 };
@@ -17,7 +16,7 @@ width: 100vw;
 height: 80px;
 background-color: lightgreen;
 display: flex;
-justify-content: center;
+justify-content: space-evenly;
 align-items: center;
 `
 
